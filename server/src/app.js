@@ -14,9 +14,28 @@ const app = express();
 
 // Security
 app.use(helmet());
+
+const allowedOrigins = (env.CLIENT_URL || 'http://localhost:5173')
+  .split(',')
+  .map((u) => u.trim().replace(/\/$/, ''))
+  .filter(Boolean);
+
 app.use(
   cors({
-    origin: env.CLIENT_URL,
+    origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, server-to-server)
+      if (!origin) return callback(null, true);
+
+      const normalizedOrigin = origin.replace(/\/$/, '');
+      if (
+        allowedOrigins.includes(normalizedOrigin) ||
+        normalizedOrigin.endsWith('.vercel.app') ||
+        env.NODE_ENV === 'development'
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error(`Origin ${origin} not allowed by CORS`));
+    },
     credentials: true,
   }),
 );

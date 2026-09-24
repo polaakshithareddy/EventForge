@@ -1,32 +1,29 @@
 import * as authService from '../services/auth.service.js';
 
+const isProduction = process.env.NODE_ENV === 'production';
+
+const getCookieOptions = (maxAge) => ({
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? 'none' : 'lax',
+  maxAge,
+});
+
 const setCookies = (res, accessToken, refreshToken, family) => {
-  res.cookie('accessToken', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 15 * 60 * 1000, // 15 mins
-  });
-
-  res.cookie('refreshToken', refreshToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-  });
-
-  res.cookie('family', family, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+  res.cookie('accessToken', accessToken, getCookieOptions(15 * 60 * 1000));
+  res.cookie('refreshToken', refreshToken, getCookieOptions(7 * 24 * 60 * 60 * 1000));
+  res.cookie('family', family, getCookieOptions(7 * 24 * 60 * 60 * 1000));
 };
 
 const clearCookies = (res) => {
-  res.clearCookie('accessToken');
-  res.clearCookie('refreshToken');
-  res.clearCookie('family');
+  const options = {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+  };
+  res.clearCookie('accessToken', options);
+  res.clearCookie('refreshToken', options);
+  res.clearCookie('family', options);
 };
 
 export const register = async (req, res) => {
@@ -35,7 +32,7 @@ export const register = async (req, res) => {
 
   res.status(201).json({
     success: true,
-    data: { user },
+    data: { user, accessToken },
     message: 'Registration successful',
   });
 };
@@ -46,7 +43,7 @@ export const login = async (req, res) => {
 
   res.json({
     success: true,
-    data: { user },
+    data: { user, accessToken },
     message: 'Login successful',
   });
 };
