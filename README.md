@@ -1,6 +1,12 @@
 # EventForge ⚡
 
 <p align="center">
+  <a href="https://event-forge-drab.vercel.app" target="_blank">
+    <img src="https://img.shields.io/badge/Live%20Demo-event--forge--drab.vercel.app-success?style=for-the-badge&logo=vercel" alt="Live Demo" />
+  </a>
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Node.js-22.x-green?logo=node.js" alt="Node.js" />
   <img src="https://img.shields.io/badge/Express-4.21-lightgrey?logo=express" alt="Express" />
   <img src="https://img.shields.io/badge/React-18.x-blue?logo=react" alt="React" />
@@ -11,6 +17,8 @@
   <img src="https://img.shields.io/badge/Tests-4%20Passed%20(Client)-success" alt="Client Tests" />
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="License" />
 </p>
+
+> 🌐 **Live Deployed Application:** [https://event-forge-drab.vercel.app](https://event-forge-drab.vercel.app)
 
 A production-grade, enterprise Corporate Event & Conference Management platform built with the MERN stack (MongoDB, Express.js, React 18, Node.js) and powered by contextual Generative AI assistants.
 
