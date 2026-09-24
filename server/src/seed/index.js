@@ -14,9 +14,11 @@ import { RefreshToken } from '../models/RefreshToken.js';
 
 const DEMO_PASSWORD = 'Password123!';
 
-async function seed() {
+async function seed({ standalone = false } = {}) {
   console.log('🚀 Starting EventForge database seeding...');
-  await connectDB();
+  if (mongoose.connection.readyState !== 1) {
+    await connectDB();
+  }
 
   console.log('🧹 Clearing previous seed data...');
   await Promise.all([
@@ -538,10 +540,17 @@ async function seed() {
   console.log('└──────────────┴───────────────────────────────┴───────────────────────────────┘\n');
   console.log('🌐 Flagship Event: /events/global-ai-cloud-summit-2026\n');
 
-  process.exit(0);
+  if (standalone) {
+    process.exit(0);
+  }
+  return { status: 'seeded', timestamp: new Date().toISOString() };
 }
 
-seed().catch((err) => {
-  console.error('❌ Seeding failed with error:', err);
-  process.exit(1);
-});
+export { seed as runSeed };
+
+if (process.argv[1] && process.argv[1].replace(/\\/g, '/').endsWith('seed/index.js')) {
+  seed({ standalone: true }).catch((err) => {
+    console.error('❌ Seeding failed with error:', err);
+    process.exit(1);
+  });
+}
